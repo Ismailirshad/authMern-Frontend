@@ -15,7 +15,7 @@ const Navbar = () => {
     try {
       axios.defaults.withCredentials = true;
       
-      const res = await axios.post(backendUrl + '/api/auth/logout')
+      const res = await axios.post(backendUrl + '/api/auth/logout',{userId: localStorage.getItem("userId")},{ withCredentials: true })
       res.data.success ? setIsLoggedIn(false) : toast.error(error.message)
       setUserData(null)
     } catch (error) {
