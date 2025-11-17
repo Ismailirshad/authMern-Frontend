@@ -15,7 +15,7 @@ const Navbar = () => {
     try {
       axios.defaults.withCredentials = true;
       
-      const res = await axios.post(backendUrl + '/api/auth/logout',{userId: localStorage.getItem("userId")},{ withCredentials: true })
+      const res = await axios.post(backendUrl + '/api/auth/logout',{ withCredentials: true })
       res.data.success ? setIsLoggedIn(false) : toast.error(error.message)
       setUserData(null)
     } catch (error) {
@@ -27,7 +27,13 @@ const Navbar = () => {
     try {
       axios.defaults.withCredentials = true;
 
-     const res = await axios.post(backendUrl + '/api/auth/send-verify-otp')
+    //  const res = await axios.post(backendUrl + '/api/auth/send-verify-otp')
+     const res = await axios.post(
+  backendUrl + '/api/auth/send-verify-otp',
+  { userId: userData._id },  
+  { withCredentials: true }
+);
+
       if (res.data.success) {
         navigate('/email-verify')
         toast.success(res.data.message)

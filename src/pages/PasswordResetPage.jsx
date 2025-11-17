@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useContext, useState } from 'react';
 import { FaLock } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
-import { data, useNavigate } from 'react-router'
+import {  useNavigate } from 'react-router'
 import { AppContent } from '../context/AppContext';
 import { toast } from 'react-toastify';
 
@@ -15,7 +15,7 @@ const PasswordResetPage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [isOtpSubmitted, setIsOtpSubmitted] = useState(false);
-  const [otp, setOtp] = useState(0);
+  const [otp, setOtp] = useState('');
   const navigate = useNavigate();
 
   const handleResetPassword = async (e) => {
@@ -66,17 +66,39 @@ const PasswordResetPage = () => {
   }
 
   const onSubmitNewPassword = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post(backendUrl + '/api/auth/reset-password', { email, otp, newPassword })
-      if (res.data.success) {
-        toast.success ? toast.success(res.data.message) : toast.error(error.message)
-        res.data.success && navigate('/login')
-      }
-    } catch (error) {
-      toast.error(error.message)
+  e.preventDefault();
+
+  // get otp directly from inputs
+  const otpValue = inputRefs.current.map(e => e.value).join('');
+
+  try {
+    const res = await axios.post(backendUrl + '/api/auth/reset-password', {
+      email,
+      otp: otpValue,   // <-- FIXED
+      newPassword
+    });
+
+    if (res.data.success) {
+      toast.success(res.data.message);
+      navigate('/login');
     }
+  } catch (error) {
+    toast.error(error.response?.data?.message || error.message);
   }
+};
+
+  // const onSubmitNewPassword = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const res = await axios.post(backendUrl + '/api/auth/reset-password', { email, otp, newPassword })
+  //     if (res.data.success) {
+  //       toast.success ? toast.success(res.data.message) : toast.error(error.message)
+  //       res.data.success && navigate('/login')
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.message)
+  //   }
+  // }
   return (
     <div className='flex items-center justify-center min-h-screen px-6 sm:px-0 
      bg-gradient-to-br from-blue-200 to-purple-400 '>
