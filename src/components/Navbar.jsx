@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router'
-import LoginPage from '../pages/LoginPage';
 import { AppContent } from '../context/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
