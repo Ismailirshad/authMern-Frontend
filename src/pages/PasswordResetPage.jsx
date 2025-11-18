@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useContext, useState } from 'react';
 import { FaLock } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
-import {  useNavigate } from 'react-router'
+import { data, useNavigate } from 'react-router'
 import { AppContent } from '../context/AppContext';
 import { toast } from 'react-toastify';
 
@@ -15,7 +15,7 @@ const PasswordResetPage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [isOtpSubmitted, setIsOtpSubmitted] = useState(false);
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState(0);
   const navigate = useNavigate();
 
   const handleResetPassword = async (e) => {
@@ -58,47 +58,30 @@ const PasswordResetPage = () => {
     })
   }
 
-  const onSubmitOtp = async (e) => {
-    e.preventDefault();
-    const otpArray = inputRefs.current.map(e => e.value)
-    setOtp(otpArray.join(''))
-    setIsOtpSubmitted(true)
-  }
-
-  const onSubmitNewPassword = async (e) => {
+ const onSubmitOtp = async (e) => {
   e.preventDefault();
 
-  // get otp directly from inputs
-  const otpValue = inputRefs.current.map(e => e.value).join('');
+  const otpArray = inputRefs.current
+    .filter(item => item !== null) // ignore null refs
+    .map(item => item.value || ""); // safely read value
 
-  try {
-    const res = await axios.post(backendUrl + '/api/auth/reset-password', {
-      email,
-      otp: otpValue,   // <-- FIXED
-      newPassword
-    });
-
-    if (res.data.success) {
-      toast.success(res.data.message);
-      navigate('/login');
-    }
-  } catch (error) {
-    toast.error(error.response?.data?.message || error.message);
-  }
+  setOtp(otpArray.join(""));
+  setIsOtpSubmitted(true);
 };
 
-  // const onSubmitNewPassword = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const res = await axios.post(backendUrl + '/api/auth/reset-password', { email, otp, newPassword })
-  //     if (res.data.success) {
-  //       toast.success ? toast.success(res.data.message) : toast.error(error.message)
-  //       res.data.success && navigate('/login')
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.message)
-  //   }
-  // }
+
+  const onSubmitNewPassword = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(backendUrl + '/api/auth/reset-password', { email, otp, newPassword })
+      if (res.data.success) {
+        toast.success ? toast.success(res.data.message) : toast.error(error.message)
+        res.data.success && navigate('/login')
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
   return (
     <div className='flex items-center justify-center min-h-screen px-6 sm:px-0 
      bg-gradient-to-br from-blue-200 to-purple-400 '>
