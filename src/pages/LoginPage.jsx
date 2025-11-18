@@ -1,7 +1,6 @@
-import React, { useContext, useState } from 'react'
-import { FaLock, FaMailBulk, FaMailchimp, FaUser } from 'react-icons/fa'
+import { useContext, useState } from 'react'
+import { FaLock, FaUser } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md';
-import { data, } from 'react-router';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
