@@ -18,7 +18,7 @@ export const AppContextProvider = (props) => {
             res.data.success ? setUserData(res.data.userData) : ""
             setIsLoggedIn(true)
         } catch (error) {
-            toast.error(error.message)
+            toast.error("User Not Found Please Login");
         }
     }
 
